@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>イベント一覧</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-calendar-event me-2"></i>
+                イベント一覧
+            </h1>
+            <a href="/events/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>新しいイベント
+            </a>
+        </div>
+
+        <!-- 今後のイベント -->
+        <div class="mb-5">
+            <h3 class="mb-3">
+                <i class="bi bi-calendar-plus me-2"></i>
+                今後のイベント
+            </h3>
+            
+            <div th:if="${upcomingEvents.empty}" class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                今後のイベントはありません
+            </div>
+            
+            <div class="row" th:if="${!upcomingEvents.empty}">
+                <div class="col-md-6 col-lg-4 mb-4" th:each="event : ${upcomingEvents}">
+                    <div class="card event-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${event.title}">イベント名</h5>
+                            <p class="card-text text-muted" th:text="${event.description}">説明</p>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <span th:text="${#temporals.format(event.startDateTime, 'yyyy/MM/dd HH:mm')}">日時</span>
+                                </small>
+                            </div>
+                            
+                            <div class="mb-3" th:if="${event.location}">
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    <span th:text="${event.location}">場所</span>
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-people me-1"></i>
+                                    <span th:text="${event.participantCount}">0</span>人参加
+                                    <span th:if="${event.maxParticipants > 0}" th:text="'/' + ${event.maxParticipants}">/ 10</span>
+                                </small>
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 過去のイベント -->
+        <div th:if="${!pastEvents.empty}">
+            <h3 class="mb-3">
+                <i class="bi bi-calendar-check me-2"></i>
+                過去のイベント
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4" th:each="event : ${pastEvents}">
+                    <div class="card h-100 opacity-75">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${event.title}">イベント名</h5>
+                            <p class="card-text text-muted" th:text="${event.description}">説明</p>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <span th:text="${#temporals.format(event.startDateTime, 'yyyy/MM/dd HH:mm')}">日時</span>
+                                </small>
+                            </div>
+                            
+                            <div class="mb-3" th:if="${event.location}">
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    <span th:text="${event.location}">場所</span>
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-people me-1"></i>
+                                    <span th:text="${event.participantCount}">0</span>人参加
+                                </small>
+                                <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-eye"></i> 詳細
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
